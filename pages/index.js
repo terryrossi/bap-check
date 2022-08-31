@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Card, Button, Item, Image } from "semantic-ui-react";
 //import factory from "../ethereum/factory";
 // new code --
@@ -6,43 +6,48 @@ import factorybap from "../ethereum/factorybap";
 // -- new code
 import Layout from "../components/Layout";
 import { Link } from "../routes";
+import axios from "axios";
+//
 
 //class CampaignIndex extends Component {
 class CampaignIndex extends Component {
   // we're using getInitialProps because of Next.js otherwise componentDidMount
   // this makes the call to web3 much more efficient because next does server side rendering
+
   static async getInitialProps() {
     const bulls = [];
 
     const minted = await factorybap.methods.minted().call();
 
-    for (let i = 35; i <= 45; i++) {
+    for (let i = 1; i <= 5; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
-      // const timeStamp = await factorybap.methods.genesisTimestamp(bull).call();
-      const breedings = await factorybap.methods.breedings(i).call();
-      // const contractURI = await factorybap.methods
-      //   .contractURI(i.toString())
-      //   .call();
-      // console.log(contractURI);
-      const num = i;
-      const img = `https://bulls-and-apes-images-resized.s3.amazonaws.com/OGBull.${num
-        .toString()
-        .padStart(5, "0")}.png`;
+      console.log(`bull : ${bull} et balance : ${balanceOf}`);
+      const res = await fetch(
+        `https://storage.mint.bullsandapesproject.com/bulls/${i}`
+      );
+
+      const data = await res.json();
+      console.log(`Voila les data: ${data}`);
+
+      const breedingsLeft = data.attributes[10];
+      const imageURL = data.image;
+      console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
+
       bulls.push({
         owner: bull,
         balanceOf: balanceOf,
-        num: num,
-        breedings: breedings,
-        img: img
+        num: i,
+        breedings: breedingsLeft,
+        img: imageURL
       });
     }
-
+    console.log(bulls);
     return { bulls };
   }
 
   renderCampaigns() {
-    console.log("this.props.bulls = ", this.props.bulls);
+    // console.log("this.props.bulls = ", this.props.bulls);
     const items = this.props.bulls.map(function(bull, i) {
       const debutAdr = bull.owner.slice(0, 8);
       return {
