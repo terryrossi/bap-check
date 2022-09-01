@@ -22,18 +22,44 @@ class CampaignIndex extends Component {
     for (let i = 1; i <= 5; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
-      console.log(`bull : ${bull} et balance : ${balanceOf}`);
+      console.log(`bull : ${i} et balance : ${balanceOf}`);
+
       const res = await fetch(
         `https://storage.mint.bullsandapesproject.com/bulls/${i}`
       );
-
       const data = await res.json();
-      console.log(`Voila les data: ${data}`);
+      console.log(`data = ${data}`);
+      // using Promises
+      // const getData = function(i) {
+      //   fetch(`https://storage.mint.bullsandapesproject.com/bulls/${i}`)
+      //     .then(function(response) {
+      //       // console.log(response);
+      //       return response.json();
+      //     })
+      //     .then(function(data) {
+      //       // console.log(Object.values(data));
+      //       console.log(data.image);
+      //     });
+      // };
+      const entries = Object.entries(data.attributes);
+      let breedingsLeft;
+      for (const [key, value] of entries) {
+        if (value.trait_type === "Breedings Left") {
+          breedingsLeft = value.value;
+          console.log("Breedings ===> ", breedingsLeft);
+        }
+      }
+      console.log("@@@@@  UNDIFINED @@@@@  ", breedingsLeft);
+      // const data = getData(i);
+      // console.log(data.trait_type);
+      // const [data] = getData(i);
 
-      const breedingsLeft = data.attributes[10];
+      // const breedingsLeft = data.attributes[10].trait_type;
+      // const breedingsLeft = data.attributes[10];
       const imageURL = data.image;
-      console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
-
+      console.log(imageURL);
+      // console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
+      //
       bulls.push({
         owner: bull,
         balanceOf: balanceOf,
