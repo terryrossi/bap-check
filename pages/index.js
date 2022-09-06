@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
-import { Card, Button, Item, Image } from "semantic-ui-react";
+import { Card, Button, Item, Image, Form, Input } from "semantic-ui-react";
 //import factory from "../ethereum/factory";
 // new code --
 import factorybap from "../ethereum/factorybap";
@@ -13,13 +13,18 @@ import axios from "axios";
 class CampaignIndex extends Component {
   // we're using getInitialProps because of Next.js otherwise componentDidMount
   // this makes the call to web3 much more efficient because next does server side rendering
+  state = { startingBull: "1" };
+  // this.setState({startingBull: '1'});
 
-  static async getInitialProps() {
+  static async getInitialProps(props) {
+    console.log("PROPS.QUERY######## ", props.query.startingBull);
+    let startingBull = props.query.startingBull;
+    startingBull ??= 10;
     const bulls = [];
-
     const minted = await factorybap.methods.minted().call();
+    // const startingBull = this.state.startingBull;
 
-    for (let i = 1; i <= 5; i++) {
+    for (let i = startingBull; i <= startingBull + 5; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
       console.log(`bull : ${i} et balance : ${balanceOf}`);
@@ -49,13 +54,6 @@ class CampaignIndex extends Component {
           console.log("Breedings ===> ", breedingsLeft);
         }
       }
-      console.log("@@@@@  UNDIFINED @@@@@  ", breedingsLeft);
-      // const data = getData(i);
-      // console.log(data.trait_type);
-      // const [data] = getData(i);
-
-      // const breedingsLeft = data.attributes[10].trait_type;
-      // const breedingsLeft = data.attributes[10];
       const imageURL = data.image;
       console.log(imageURL);
       // console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
@@ -71,6 +69,10 @@ class CampaignIndex extends Component {
     console.log(bulls);
     return { bulls };
   }
+  onSubmit = async event => {
+    //preventDefault to avoid having the browser execute the function
+    event.preventDefault();
+  };
 
   renderCampaigns() {
     // console.log("this.props.bulls = ", this.props.bulls);
@@ -109,6 +111,24 @@ class CampaignIndex extends Component {
       <Layout>
         <div>
           <h3>Open Campaigns</h3>
+
+          <Form onSubmit={this.onSubmit}>
+            <Form.Field>
+              <label>Starting from: </label>
+              <Input
+                label="10"
+                labelPosition="right"
+                value={this.state.startingBull}
+                onChange={event =>
+                  this.state({ startingBull: event.target.value })
+                }
+              />
+            </Form.Field>
+
+            <a>
+              <Button primary>Show...</Button>
+            </a>
+          </Form>
           <Link route="/campaigns/new">
             <a>
               <Button
