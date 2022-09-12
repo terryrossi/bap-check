@@ -5,7 +5,7 @@ import { Card, Button, Item, Image, Form, Input } from "semantic-ui-react";
 import factorybap from "../ethereum/factorybap";
 // -- new code
 import Layout from "../components/Layout";
-import { Link } from "../routes";
+import { Link, Router } from "../routes";
 import axios from "axios";
 //
 
@@ -19,12 +19,12 @@ class CampaignIndex extends Component {
   static async getInitialProps(props) {
     console.log("PROPS.QUERY######## ", props.query.startingBull);
     let startingBull = props.query.startingBull;
-    startingBull ??= 10;
+    startingBull ??= 1;
     const bulls = [];
     const minted = await factorybap.methods.minted().call();
     // const startingBull = this.state.startingBull;
 
-    for (let i = startingBull; i <= startingBull + 5; i++) {
+    for (let i = startingBull; i <= startingBull + 20; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
       console.log(`bull : ${i} et balance : ${balanceOf}`);
@@ -72,6 +72,15 @@ class CampaignIndex extends Component {
   onSubmit = async event => {
     //preventDefault to avoid having the browser execute the function
     event.preventDefault();
+    console.log(
+      "inside onsubmit. this.state.startingBull = ",
+      this.state.startingBull
+    );
+    console.log(
+      "From Index.js this.state.startingBull =====",
+      this.state.startingBull
+    );
+    Router.pushRoute(`/campaigns/${this.state.startingBull}`);
   };
 
   renderCampaigns() {
@@ -116,29 +125,19 @@ class CampaignIndex extends Component {
             <Form.Field>
               <label>Starting from: </label>
               <Input
-                label="10"
-                labelPosition="right"
+                label="Starting from Bull"
+                labelPosition="left"
                 value={this.state.startingBull}
                 onChange={event =>
-                  this.state({ startingBull: event.target.value })
+                  this.setState({ startingBull: event.target.value })
                 }
               />
+              <a>
+                <Button primary>Show next 20...</Button>
+              </a>
             </Form.Field>
-
-            <a>
-              <Button primary>Show...</Button>
-            </a>
           </Form>
-          <Link route="/campaigns/new">
-            <a>
-              <Button
-                floated="right"
-                content="Create Campaign"
-                icon="add circle"
-                primary
-              />
-            </a>
-          </Link>
+          <br></br>
           {this.renderCampaigns()}
         </div>
       </Layout>
