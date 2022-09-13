@@ -24,7 +24,8 @@ class CampaignIndex extends Component {
     const minted = await factorybap.methods.minted().call();
     // const startingBull = this.state.startingBull;
 
-    for (let i = startingBull; i <= startingBull + 20; i++) {
+    // for (let i = startingBull; i <= startingBull + 20; i++) {
+    for (let i = Number(startingBull); i <= Number(startingBull) + 5; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
       console.log(`bull : ${i} et balance : ${balanceOf}`);
@@ -63,7 +64,8 @@ class CampaignIndex extends Component {
         balanceOf: balanceOf,
         num: i,
         breedings: breedingsLeft,
-        img: imageURL
+        img: imageURL,
+        startingBull: startingBull
       });
     }
     console.log(bulls);
@@ -80,7 +82,7 @@ class CampaignIndex extends Component {
       "From Index.js this.state.startingBull =====",
       this.state.startingBull
     );
-    Router.pushRoute(`/campaigns/${this.state.startingBull}`);
+    Router.pushRoute(`/${this.state.startingBull}`);
   };
 
   renderCampaigns() {

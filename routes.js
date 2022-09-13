@@ -6,6 +6,7 @@ routes
   //  .add("/campaigns/:address/requests", "/campaigns/requests/index")
   //  .add("/campaigns/:address/requests/new", "/campaigns/requests/new")
 
-  .add("/campaigns/:startingBull", "/campaigns/pagination/");
+  // .add("/campaigns/:startingBull", "/campaigns/pagination/");
+  .add("/:startingBull", "/");
 
 module.exports = routes;
