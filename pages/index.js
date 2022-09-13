@@ -13,11 +13,11 @@ import axios from "axios";
 class CampaignIndex extends Component {
   // we're using getInitialProps because of Next.js otherwise componentDidMount
   // this makes the call to web3 much more efficient because next does server side rendering
-  state = { startingBull: "1" };
+  state = { startingBull: "" };
   // this.setState({startingBull: '1'});
 
   static async getInitialProps(props) {
-    console.log("PROPS.QUERY######## ", props.query.startingBull);
+    // console.log("PROPS.QUERY######## ", props.query.startingBull);
     let startingBull = props.query.startingBull;
     startingBull ??= 1;
     const bulls = [];
@@ -28,13 +28,13 @@ class CampaignIndex extends Component {
     for (let i = Number(startingBull); i <= Number(startingBull) + 5; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
-      console.log(`bull : ${i} et balance : ${balanceOf}`);
+      // console.log(`bull : ${i} et balance : ${balanceOf}`);
 
       const res = await fetch(
         `https://storage.mint.bullsandapesproject.com/bulls/${i}`
       );
       const data = await res.json();
-      console.log(`data = ${data}`);
+      // console.log(`data = ${data}`);
       // using Promises
       // const getData = function(i) {
       //   fetch(`https://storage.mint.bullsandapesproject.com/bulls/${i}`)
@@ -52,11 +52,11 @@ class CampaignIndex extends Component {
       for (const [key, value] of entries) {
         if (value.trait_type === "Breedings Left") {
           breedingsLeft = value.value;
-          console.log("Breedings ===> ", breedingsLeft);
+          // console.log("Breedings ===> ", breedingsLeft);
         }
       }
       const imageURL = data.image;
-      console.log(imageURL);
+      // console.log(imageURL);
       // console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
       //
       bulls.push({
@@ -68,20 +68,20 @@ class CampaignIndex extends Component {
         startingBull: startingBull
       });
     }
-    console.log(bulls);
+    // console.log(bulls);
     return { bulls };
   }
   onSubmit = async event => {
     //preventDefault to avoid having the browser execute the function
     event.preventDefault();
-    console.log(
-      "inside onsubmit. this.state.startingBull = ",
-      this.state.startingBull
-    );
-    console.log(
-      "From Index.js this.state.startingBull =====",
-      this.state.startingBull
-    );
+    // console.log(
+    // "inside onsubmit. this.state.startingBull = ",
+    // this.state.startingBull
+    // );
+    // console.log(
+    //   "From Index.js this.state.startingBull =====",
+    //   this.state.startingBull
+    // );
     Router.pushRoute(`/${this.state.startingBull}`);
   };
 
@@ -121,7 +121,9 @@ class CampaignIndex extends Component {
     return (
       <Layout>
         <div>
-          <h3>Open Campaigns</h3>
+          <h3>
+            <center>BULLS AND APES PROJECT</center>
+          </h3>
 
           <Form onSubmit={this.onSubmit}>
             <Form.Field>

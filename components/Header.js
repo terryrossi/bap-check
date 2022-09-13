@@ -6,17 +6,12 @@ const Header = () => {
   return (
     <Menu style={{ marginTop: "10px" }}>
       <Link route="/">
-        <a className="item">CrowdCoin</a>
+        <a className="item">Home</a>
       </Link>
-      <Menu.Menu position="right">
-        <Link route="/">
-          <a className="item">Campaigns</a>
-        </Link>
-
-        <Link route="/campaigns/new">
-          <a className="item">+</a>
-        </Link>
-      </Menu.Menu>
+      <a className="item">Gods</a>
+      <a className="item">Bulls</a>
+      <a className="item">Teens</a>
+      <a className="item">Wallets</a>
     </Menu>
   );
 };
