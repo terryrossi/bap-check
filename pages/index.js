@@ -25,7 +25,7 @@ class CampaignIndex extends Component {
     // const startingBull = this.state.startingBull;
 
     // for (let i = startingBull; i <= startingBull + 20; i++) {
-    for (let i = Number(startingBull); i <= Number(startingBull) + 5; i++) {
+    for (let i = Number(startingBull); i <= Number(startingBull) + 19; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
       // console.log(`bull : ${i} et balance : ${balanceOf}`);
