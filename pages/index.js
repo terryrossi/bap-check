@@ -22,10 +22,11 @@ class CampaignIndex extends Component {
     startingBull ??= 1;
     const bulls = [];
     const minted = await factorybap.methods.minted().call();
+
     // const startingBull = this.state.startingBull;
 
     // for (let i = startingBull; i <= startingBull + 20; i++) {
-    for (let i = Number(startingBull); i <= Number(startingBull) + 19; i++) {
+    for (let i = Number(startingBull); i <= Number(startingBull) + 9; i++) {
       const bull = await factorybap.methods.ownerOf(i).call();
       const balanceOf = await factorybap.methods.balanceOf(bull).call();
       // console.log(`bull : ${i} et balance : ${balanceOf}`);
@@ -69,7 +70,7 @@ class CampaignIndex extends Component {
       });
     }
     // console.log(bulls);
-    return { bulls };
+    return { bulls, minted };
   }
   onSubmit = async event => {
     //preventDefault to avoid having the browser execute the function
@@ -86,13 +87,12 @@ class CampaignIndex extends Component {
   };
 
   renderCampaigns() {
-    // console.log("this.props.bulls = ", this.props.bulls);
     const items = this.props.bulls.map(function(bull, i) {
       const debutAdr = bull.owner.slice(0, 8);
       return {
         childKey: i,
         image: bull.img,
-        header: `Bull # ${bull.num} ==> has ${bull.breedings} breedings left`,
+        header: `Bull # ${bull.num} has ${bull.breedings} breedings left`,
         description: `${debutAdr}${bull.owner
           .slice(-4)
           .padStart(7, ".")} ==> owns ${bull.balanceOf} Bulls Total`
@@ -127,7 +127,12 @@ class CampaignIndex extends Component {
 
           <Form onSubmit={this.onSubmit}>
             <Form.Field>
-              <label>Starting from: </label>
+              <label>
+                <h4>
+                  Max numbers of Bulls/Gods Minted so far : {this.props.minted}
+                </h4>
+              </label>
+              <br></br>
               <Input
                 label="Starting from Bull"
                 labelPosition="left"
@@ -137,7 +142,7 @@ class CampaignIndex extends Component {
                 }
               />
               <a>
-                <Button primary>Show next 20...</Button>
+                <Button primary>Show next 10...</Button>
               </a>
             </Form.Field>
           </Form>
