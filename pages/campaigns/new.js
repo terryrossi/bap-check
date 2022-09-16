@@ -1,3 +1,4 @@
+/*
 import React, { Component } from "react";
 import { Form, Button, Input, Message } from "semantic-ui-react";
 import Layout from "../../components/Layout";
@@ -58,3 +59,4 @@ class CampaignNew extends Component {
 }
 
 export default CampaignNew;
+*/

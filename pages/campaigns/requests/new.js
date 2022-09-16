@@ -1,3 +1,4 @@
+/*
 import React, { Component } from "react";
 import { Form, Button, Message, Input } from "semantic-ui-react";
 import Campaign from "../../../ethereum/campaign";
@@ -84,3 +85,4 @@ class RequestNew extends Component {
 }
 
 export default RequestNew;
+*/

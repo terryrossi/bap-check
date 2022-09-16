@@ -1,3 +1,4 @@
+/*
 import React, { Component, useState, useEffect } from "react";
 import { Card, Button, Item, Image, Form, Input } from "semantic-ui-react";
 //import factory from "../ethereum/factory";
@@ -152,3 +153,4 @@ class Pagination extends Component {
 }
 
 export default Pagination;
+*/

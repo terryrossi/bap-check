@@ -1,3 +1,4 @@
+/*
 import React, { Component } from "react";
 import { Button, Table } from "semantic-ui-react";
 import { Link } from "../../../routes";
@@ -71,3 +72,4 @@ class RequestIndex extends Component {
 }
 
 export default RequestIndex;
+*/

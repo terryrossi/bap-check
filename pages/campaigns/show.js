@@ -1,3 +1,4 @@
+/*
 import React, { Component } from "react";
 import { Card, Grid, Button } from "semantic-ui-react";
 import Layout from "../../components/Layout";
@@ -96,3 +97,4 @@ class CampaignShow extends Component {
 }
 
 export default CampaignShow;
+*/
