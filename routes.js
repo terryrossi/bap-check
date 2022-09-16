@@ -7,6 +7,9 @@ routes
   //  .add("/campaigns/:address/requests/new", "/campaigns/requests/new")
 
   // .add("/campaigns/:startingBull", "/campaigns/pagination/");
-  .add("/:startingBull", "/");
+  .add("/home", "/")
+  .add("/teens", "/bap/teens")
+  .add("/:startingBull", "/")
+  .add("/teens/:startingTeen", "/bap/teens");
 
 module.exports = routes;

@@ -1,8 +1,6 @@
 import React, { Component, useState, useEffect } from "react";
 import { Card, Button, Item, Image, Form, Input } from "semantic-ui-react";
-//import factory from "../ethereum/factory";
-// new code --
-import factorybap from "../ethereum/factorybap";
+import instanceBulls from "../ethereum/bapBulls";
 // -- new code
 import Layout from "../components/Layout";
 import { Link, Router } from "../routes";
@@ -10,7 +8,7 @@ import axios from "axios";
 //
 
 //class CampaignIndex extends Component {
-class CampaignIndex extends Component {
+class BullsIndex extends Component {
   // we're using getInitialProps because of Next.js otherwise componentDidMount
   // this makes the call to web3 much more efficient because next does server side rendering
   state = { startingBull: "" };
@@ -21,53 +19,57 @@ class CampaignIndex extends Component {
     let startingBull = props.query.startingBull;
     startingBull ??= 1;
     const bulls = [];
-    const minted = await factorybap.methods.minted().call();
+    const minted = await instanceBulls.methods.minted().call();
 
     // const startingBull = this.state.startingBull;
 
     // for (let i = startingBull; i <= startingBull + 20; i++) {
     for (let i = Number(startingBull); i <= Number(startingBull) + 9; i++) {
-      const bull = await factorybap.methods.ownerOf(i).call();
-      const balanceOf = await factorybap.methods.balanceOf(bull).call();
-      // console.log(`bull : ${i} et balance : ${balanceOf}`);
+      try {
+        const bull = await instanceBulls.methods.ownerOf(i).call();
+        const balanceOf = await instanceBulls.methods.balanceOf(bull).call();
+        // console.log(`bull : ${i} et balance : ${balanceOf}`);
 
-      const res = await fetch(
-        `https://storage.mint.bullsandapesproject.com/bulls/${i}`
-      );
-      const data = await res.json();
-      // console.log(`data = ${data}`);
-      // using Promises
-      // const getData = function(i) {
-      //   fetch(`https://storage.mint.bullsandapesproject.com/bulls/${i}`)
-      //     .then(function(response) {
-      //       // console.log(response);
-      //       return response.json();
-      //     })
-      //     .then(function(data) {
-      //       // console.log(Object.values(data));
-      //       console.log(data.image);
-      //     });
-      // };
-      const entries = Object.entries(data.attributes);
-      let breedingsLeft;
-      for (const [key, value] of entries) {
-        if (value.trait_type === "Breedings Left") {
-          breedingsLeft = value.value;
-          // console.log("Breedings ===> ", breedingsLeft);
+        const res = await fetch(
+          `https://storage.mint.bullsandapesproject.com/bulls/${i}`
+        );
+        const data = await res.json();
+        // console.log(`data = ${data}`);
+        // using Promises
+        // const getData = function(i) {
+        //   fetch(`https://storage.mint.bullsandapesproject.com/bulls/${i}`)
+        //     .then(function(response) {
+        //       // console.log(response);
+        //       return response.json();
+        //     })
+        //     .then(function(data) {
+        //       // console.log(Object.values(data));
+        //       console.log(data.image);
+        //     });
+        // };
+        const entries = Object.entries(data.attributes);
+        let breedingsLeft;
+        for (const [key, value] of entries) {
+          if (value.trait_type === "Breedings Left") {
+            breedingsLeft = value.value;
+            // console.log("Breedings ===> ", breedingsLeft);
+          }
         }
+        const imageURL = data.image;
+        // console.log(imageURL);
+        // console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
+        //
+        bulls.push({
+          owner: bull,
+          balanceOf: balanceOf,
+          num: i,
+          breedings: breedingsLeft,
+          img: imageURL,
+          startingBull: startingBull
+        });
+      } catch (err) {
+        console.log("PROBLEME SUR BULL JSON (NOT FOUND?)");
       }
-      const imageURL = data.image;
-      // console.log(imageURL);
-      // console.log(`breedings ; ${breedingsLeft} imageURL ; ${imageURL}`);
-      //
-      bulls.push({
-        owner: bull,
-        balanceOf: balanceOf,
-        num: i,
-        breedings: breedingsLeft,
-        img: imageURL,
-        startingBull: startingBull
-      });
     }
     // console.log(bulls);
     return { bulls, minted };
@@ -129,7 +131,8 @@ class CampaignIndex extends Component {
             <Form.Field>
               <label>
                 <h4>
-                  Max numbers of Bulls/Gods Minted so far : {this.props.minted}
+                  Max numbers of Bulls and Gods Minted so far :{" "}
+                  {this.props.minted}
                 </h4>
               </label>
               <br></br>
@@ -154,4 +157,4 @@ class CampaignIndex extends Component {
   }
 }
 
-export default CampaignIndex;
+export default BullsIndex;

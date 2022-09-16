@@ -9,8 +9,12 @@ const Header = () => {
         <a className="item">Home</a>
       </Link>
       <a className="item">Gods</a>
-      <a className="item">Bulls</a>
-      <a className="item">Teens</a>
+      <Link route="/">
+        <a className="item">Genesis Bulls</a>
+      </Link>
+      <Link route="/teens">
+        <a className="item">Teens</a>
+      </Link>
       <a className="item">Wallets</a>
     </Menu>
   );
