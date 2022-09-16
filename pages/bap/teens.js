@@ -13,36 +13,28 @@ class TeensIndex extends Component {
   // this.setState({startingBull: '1'});
 
   static async getInitialProps(props) {
-    // console.log("PROPS.QUERY######## ", props.query.startingBull);
     let startingTeen = props.query.startingTeen;
     startingTeen ??= 1;
     const teens = [];
     const supplyLeft = await instanceTeens.methods.totalSupply().call();
     const maxSupply = await instanceTeens.methods.maxSupply().call();
-    console.log("=======");
-    console.log("TOTAL SUPPLY =======", supplyLeft);
-    console.log("=======");
+
     // const startingBull = this.state.startingBull;
     for (let i = Number(startingTeen); i <= Number(startingTeen) + 9; i++) {
       try {
         const teen = await instanceTeens.methods.ownerOf(i).call();
         const balanceOf = await instanceTeens.methods.balanceOf(teen).call();
 
-        console.log(
-          `FOR TEEN ${i} ADDRESS ${teen} BALANCEOF ======== ${balanceOf}`
-        );
         const res = await fetch(
           `https://storage.mint.bullsandapesproject.com/teens/${i}`
         );
         const data = await res.json();
-        console.log(`data = ${data}`);
 
         const entries = Object.entries(data.attributes);
         let guild;
         for (const [key, value] of entries) {
           if (value.trait_type === "Guild") {
             guild = value.value;
-            console.log("Guild ===> ", guild);
           }
         }
         const imageURL = data.image;
@@ -59,7 +51,6 @@ class TeensIndex extends Component {
         console.log("PROBLEM SUR TEEN JSON (INEXISTANT?)");
       }
     }
-    // console.log(bulls);
     return { teens, supplyLeft, maxSupply };
   }
   onSubmit = async event => {
@@ -82,9 +73,7 @@ class TeensIndex extends Component {
       };
     });
     //
-    // console.log(items);
     return <Card.Group items={items} />;
-    // return items;
   }
 
   render() {
@@ -99,8 +88,8 @@ class TeensIndex extends Component {
             <Form.Field>
               <label>
                 <h4>
-                  There's been {this.props.supplyLeft} Teens Minted so far out
-                  of a max of {this.props.maxSupply}
+                  There are currently {this.props.supplyLeft} Teens "Above
+                  Ground"
                 </h4>
               </label>
               <br></br>
