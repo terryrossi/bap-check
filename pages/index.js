@@ -18,23 +18,33 @@ class BullsIndex extends Component {
     // console.log("PROPS.QUERY######## ", props.query.startingBull);
     let startingBull = props.query.startingBull;
     startingBull ??= 1;
+    const maxNumberOfBullsToShow = 9;
     const bulls = [];
+    let missingBulls = "";
     const minted = await instanceBulls.methods.minted().call();
 
     // const startingBull = this.state.startingBull;
 
     // for (let i = startingBull; i <= startingBull + 20; i++) {
-    for (let i = Number(startingBull); i <= Number(startingBull) + 9; i++) {
+    for (
+      let i = Number(startingBull);
+      i <= Number(startingBull) + maxNumberOfBullsToShow;
+      i++
+    ) {
       try {
-        const bull = await instanceBulls.methods.ownerOf(i).call();
-        const balanceOf = await instanceBulls.methods.balanceOf(bull).call();
-        // console.log(`bull : ${i} et balance : ${balanceOf}`);
-
         const res = await fetch(
           `https://storage.mint.bullsandapesproject.com/bulls/${i}`
         );
+        if (!res.ok) {
+          // console.log(i);
+          missingBulls = missingBulls + i + ", ";
+
+          throw new Error(`Problem with Bull ${i} Missing JSON`);
+        }
         const data = await res.json();
-        // console.log(`data = ${data}`);
+        const bull = await instanceBulls.methods.ownerOf(i).call();
+        const balanceOf = await instanceBulls.methods.balanceOf(bull).call();
+
         // using Promises
         // const getData = function(i) {
         //   fetch(`https://storage.mint.bullsandapesproject.com/bulls/${i}`)
@@ -47,6 +57,7 @@ class BullsIndex extends Component {
         //       console.log(data.image);
         //     });
         // };
+
         const entries = Object.entries(data.attributes);
         let breedingsLeft;
         for (const [key, value] of entries) {
@@ -64,15 +75,20 @@ class BullsIndex extends Component {
           balanceOf: balanceOf,
           num: i,
           breedings: breedingsLeft,
-          img: imageURL,
-          startingBull: startingBull
+          img: imageURL
+          // startingBull: startingBull
         });
       } catch (err) {
-        console.log("PROBLEME SUR BULL JSON (NOT FOUND?)");
+        console.log(`PROBLEME SUR BULL ${i} JSON (NOT FOUND?)`);
       }
     }
-    // console.log(bulls);
-    return { bulls, minted };
+    // Remove comma on last character
+    missingBulls = missingBulls
+      ? `Missing Bulls : ${missingBulls.slice(0, -2)}`
+      : "";
+    //
+    startingBull = 0;
+    return { bulls, minted, missingBulls, startingBull };
   }
   onSubmit = async event => {
     //preventDefault to avoid having the browser execute the function
@@ -86,6 +102,7 @@ class BullsIndex extends Component {
     //   this.state.startingBull
     // );
     Router.pushRoute(`/${this.state.startingBull}`);
+    this.setState({ startingBull: "" });
   };
 
   renderCampaigns() {
@@ -147,6 +164,7 @@ class BullsIndex extends Component {
               <a>
                 <Button primary>Show next 10...</Button>
               </a>
+              <h4>{this.props.missingBulls}</h4>
             </Form.Field>
           </Form>
           <br></br>

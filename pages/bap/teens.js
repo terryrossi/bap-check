@@ -15,20 +15,32 @@ class TeensIndex extends Component {
   static async getInitialProps(props) {
     let startingTeen = props.query.startingTeen;
     startingTeen ??= 1;
+    const maxNumberOfTeensToShow = 9;
     const teens = [];
+    let burntTeens = "";
     const supplyLeft = await instanceTeens.methods.totalSupply().call();
     const maxSupply = await instanceTeens.methods.maxSupply().call();
 
     // const startingBull = this.state.startingBull;
-    for (let i = Number(startingTeen); i <= Number(startingTeen) + 9; i++) {
+    for (
+      let i = Number(startingTeen);
+      i <= Number(startingTeen) + maxNumberOfTeensToShow;
+      i++
+    ) {
       try {
-        const teen = await instanceTeens.methods.ownerOf(i).call();
-        const balanceOf = await instanceTeens.methods.balanceOf(teen).call();
-
         const res = await fetch(
           `https://storage.mint.bullsandapesproject.com/teens/${i}`
         );
+        if (!res.ok) {
+          // console.log(i);
+          burntTeens = burntTeens + i + ", ";
+
+          throw new Error(`Problem with TEEN ${i} JSON (Teen was burnt?)`);
+        }
+        // console.log(`BURNTTEENS : ${burntTeens}`);
         const data = await res.json();
+        const teen = await instanceTeens.methods.ownerOf(i).call();
+        const balanceOf = await instanceTeens.methods.balanceOf(teen).call();
 
         const entries = Object.entries(data.attributes);
         let guild;
@@ -48,16 +60,20 @@ class TeensIndex extends Component {
           startingTeen: startingTeen
         });
       } catch (err) {
-        console.log("PROBLEM SUR TEEN JSON (INEXISTANT?)");
+        console.log(`${err}`);
       }
     }
-    return { teens, supplyLeft, maxSupply };
+    // Remove comma on last character
+    burntTeens = burntTeens.slice(0, -2);
+    //
+    return { teens, supplyLeft, maxSupply, burntTeens };
   }
   onSubmit = async event => {
     //preventDefault to avoid having the browser execute the function
     event.preventDefault();
 
     Router.pushRoute(`/teens/${this.state.startingTeen}`);
+    this.setState({ startingTeen: "" });
   };
 
   renderCampaigns() {
@@ -103,6 +119,9 @@ class TeensIndex extends Component {
               />
               <a>
                 <Button primary>Show next 10...</Button>
+              </a>
+              <a>
+                <h4>Burnt Teens : {this.props.burntTeens}</h4>
               </a>
             </Form.Field>
           </Form>
